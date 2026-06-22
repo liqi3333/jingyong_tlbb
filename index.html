@@ -80,10 +80,39 @@
                 padding: 6px 14px;
                 border-radius: 4px;
                 transition: all 0.2s;
+                white-space: nowrap;
             }
             .navbar .nav-links a:hover {
                 background: #8b0000;
                 color: #fff;
+            }
+            /* 汉堡菜单按钮 - 桌面隐藏 */
+            .navbar .menu-toggle {
+                display: none;
+                flex-direction: column;
+                gap: 5px;
+                cursor: pointer;
+                padding: 4px;
+                background: none;
+                border: none;
+                z-index: 1001;
+            }
+            .navbar .menu-toggle span {
+                display: block;
+                width: 24px;
+                height: 2px;
+                background: #8b0000;
+                border-radius: 2px;
+                transition: all 0.3s ease;
+            }
+            .navbar .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            .navbar .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .navbar .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
             }
 
             /* ===== Hero 区 ===== */
@@ -539,12 +568,61 @@
             }
 
             /* ===== 响应式 ===== */
+            /* ===== 移动端导航遮罩 ===== */
+            .nav-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 998;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .nav-overlay.show {
+                display: block;
+                opacity: 1;
+            }
+
             @media (max-width: 768px) {
                 .navbar {
                     padding: 0 20px;
                 }
                 .navbar .nav-links {
-                    display: none;
+                    position: fixed;
+                    top: 0;
+                    right: -280px;
+                    width: 260px;
+                    height: 100vh;
+                    flex-direction: column;
+                    gap: 0;
+                    background: #fff;
+                    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+                    z-index: 999;
+                    padding: 80px 0 30px;
+                    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                    overflow-y: auto;
+                }
+                .navbar .nav-links.open {
+                    right: 0;
+                }
+                .navbar .nav-links a {
+                    display: block;
+                    padding: 16px 30px;
+                    font-size: 16px;
+                    color: #333;
+                    border-bottom: 1px solid #f0ece6;
+                    letter-spacing: 2px;
+                    white-space: normal;
+                }
+                .navbar .nav-links a:hover {
+                    background: #f9f5f0;
+                    color: #8b0000;
+                }
+                .navbar .menu-toggle {
+                    display: flex;
                 }
                 .hero .main-title {
                     letter-spacing: 10px;
@@ -611,7 +689,12 @@
         <!-- ===== 导航栏 ===== -->
         <nav class="navbar" id="navbar">
             <a href="#" class="logo">天龙八部</a>
-            <div class="nav-links">
+            <button class="menu-toggle" id="menuToggle" aria-label="导航菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
                 <a href="#volumes">五卷纪事</a>
                 <a href="#appendix">附论</a>
                 <a href="#characters">人物</a>
@@ -619,6 +702,8 @@
                 <a href="天龙八部简介-排版版.html" target="_blank">全文</a>
             </div>
         </nav>
+        <!-- 移动端导航遮罩 -->
+        <div class="nav-overlay" id="navOverlay"></div>
 
         <!-- ===== Hero ===== -->
         <header class="hero" id="top">
@@ -991,6 +1076,45 @@
             });
             backTop.addEventListener("click", () => {
                 window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+
+            // 移动端汉堡菜单
+            const menuToggle = document.getElementById("menuToggle");
+            const navLinks = document.getElementById("navLinks");
+            const navOverlay = document.getElementById("navOverlay");
+
+            function openMenu() {
+                menuToggle.classList.add("active");
+                navLinks.classList.add("open");
+                navOverlay.style.display = "block";
+                // 强制重排后显示过渡动画
+                requestAnimationFrame(() => {
+                    navOverlay.classList.add("show");
+                });
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeMenu() {
+                menuToggle.classList.remove("active");
+                navLinks.classList.remove("open");
+                navOverlay.classList.remove("show");
+                navOverlay.style.display = "";
+                document.body.style.overflow = "";
+            }
+
+            menuToggle.addEventListener("click", () => {
+                if (navLinks.classList.contains("open")) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            navOverlay.addEventListener("click", closeMenu);
+
+            // 点击链接后自动关闭菜单
+            navLinks.querySelectorAll("a").forEach((link) => {
+                link.addEventListener("click", closeMenu);
             });
         </script>
     </body>
