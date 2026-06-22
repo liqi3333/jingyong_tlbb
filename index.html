@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>天龙八部 — 金庸武侠经典</title>
+        <style>
+            /*</title> ===== 全局重置与基础 ===== */
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family:
+                    "STSong", "SimSun", "Songti SC", "Noto Serif SC",
+                    "Source Han Serif SC", Georgia, serif;
+                background: #faf8f5;
+                color: #1a1a1a;
+                line-height: 1.8;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            /* ===== 滚动条美化 ===== */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #f0ece6;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #8b0000;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #6b0000;
+            }
+
+            /* ===== 导航栏 ===== */
+            .navbar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: rgba(250, 248, 245, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-bottom: 1px solid rgba(139, 0, 0, 0.15);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 40px;
+                height: 60px;
+                transition: box-shadow 0.3s;
+            }
+            .navbar.scrolled {
+                box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            }
+            .navbar .logo {
+                font-size: 20px;
+                font-weight: bold;
+                color: #8b0000;
+                letter-spacing: 4px;
+                text-decoration: none;
+            }
+            .navbar .nav-links {
+                display: flex;
+                gap: 8px;
+            }
+            .navbar .nav-links a {
+                text-decoration: none;
+                color: #555;
+                font-size: 14px;
+                padding: 6px 14px;
+                border-radius: 4px;
+                transition: all 0.2s;
+            }
+            .navbar .nav-links a:hover {
+                background: #8b0000;
+                color: #fff;
+            }
+
+            /* ===== Hero 区 ===== */
+            .hero {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                background: linear-gradient(
+                    160deg,
+                    #1a0a0a 0%,
+                    #2d0f0f 30%,
+                    #3a1414 60%,
+                    #1a0a0a 100%
+                );
+                position: relative;
+                overflow: hidden;
+                padding: 120px 20px 80px;
+            }
+            .hero::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(
+                        ellipse at 20% 50%,
+                        rgba(139, 0, 0, 0.15) 0%,
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        ellipse at 80% 50%,
+                        rgba(180, 120, 60, 0.08) 0%,
+                        transparent 60%
+                    );
+            }
+            .hero::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 200, 100, 0.3),
+                    transparent
+                );
+            }
+            .hero .deco-top {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #8b0000, #c49a6c, #8b0000);
+            }
+            .hero .scroll-indicator {
+                position: absolute;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: rgba(255, 255, 255, 0.3);
+                font-size: 13px;
+                letter-spacing: 2px;
+                animation: floatDown 2s ease-in-out infinite;
+            }
+            @keyframes floatDown {
+                0%,
+                100% {
+                    transform: translateX(-50%) translateY(0);
+                    opacity: 0.3;
+                }
+                50% {
+                    transform: translateX(-50%) translateY(8px);
+                    opacity: 0.8;
+                }
+            }
+            .hero .main-title {
+                font-size: clamp(56px, 10vw, 96px);
+                letter-spacing: 20px;
+                color: #c49a6c;
+                font-weight: normal;
+                text-shadow: 0 2px 30px rgba(196, 154, 108, 0.15);
+                position: relative;
+                z-index: 1;
+                margin-bottom: 12px;
+            }
+            .hero .main-title .sub-accent {
+                display: block;
+                font-size: clamp(20px, 3vw, 32px);
+                letter-spacing: 12px;
+                color: rgba(255, 255, 255, 0.15);
+                margin-top: 8px;
+                font-weight: 300;
+            }
+            .hero .divider-line {
+                width: 80px;
+                height: 2px;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    #c49a6c,
+                    transparent
+                );
+                margin: 24px auto;
+                position: relative;
+                z-index: 1;
+            }
+            .hero .subtitle {
+                font-size: clamp(16px, 2.5vw, 26px);
+                color: rgba(255, 255, 255, 0.5);
+                letter-spacing: 8px;
+                position: relative;
+                z-index: 1;
+                font-weight: 300;
+            }
+            .hero .author-line {
+                font-size: clamp(14px, 1.8vw, 18px);
+                color: rgba(255, 255, 255, 0.25);
+                margin-top: 20px;
+                letter-spacing: 4px;
+                position: relative;
+                z-index: 1;
+            }
+            .hero .hero-verse {
+                position: relative;
+                z-index: 1;
+                margin-top: 50px;
+                font-size: 16px;
+                color: rgba(196, 154, 108, 0.4);
+                letter-spacing: 6px;
+                line-height: 2.2;
+            }
+            /* 粒子装饰 */
+            .hero .particles {
+                position: absolute;
+                inset: 0;
+                overflow: hidden;
+                pointer-events: none;
+                z-index: 0;
+            }
+            .hero .particle {
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background: rgba(196, 154, 108, 0.3);
+                border-radius: 50%;
+                animation: particleFloat linear infinite;
+            }
+            @keyframes particleFloat {
+                0% {
+                    transform: translateY(100vh) rotate(0deg);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-10vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+
+            /* ===== 引言区 ===== */
+            .intro-section {
+                max-width: 780px;
+                margin: 0 auto;
+                padding: 80px 30px 60px;
+                text-align: center;
+            }
+            .intro-section .intro-quote {
+                font-size: 18px;
+                line-height: 2.2;
+                color: #555;
+                position: relative;
+                padding: 30px 20px;
+            }
+            .intro-section .intro-quote::before {
+                content: "\201C";
+                font-size: 64px;
+                color: #c49a6c;
+                position: absolute;
+                top: -10px;
+                left: -10px;
+                opacity: 0.3;
+                font-family: Georgia, serif;
+            }
+            .intro-section .intro-quote::after {
+                content: "\201D";
+                font-size: 64px;
+                color: #c49a6c;
+                position: absolute;
+                bottom: -40px;
+                right: -10px;
+                opacity: 0.3;
+                font-family: Georgia, serif;
+            }
+            .intro-section .intro-quote cite {
+                display: block;
+                margin-top: 20px;
+                font-style: normal;
+                font-size: 14px;
+                color: #999;
+            }
+
+            /* ===== 卷卡片区 ===== */
+            .section-title {
+                text-align: center;
+                font-size: 28px;
+                letter-spacing: 6px;
+                color: #8b0000;
+                margin-bottom: 8px;
+                font-weight: normal;
+            }
+            .section-subtitle {
+                text-align: center;
+                font-size: 14px;
+                color: #aaa;
+                letter-spacing: 4px;
+                margin-bottom: 50px;
+            }
+            .volumes-grid {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 0 30px 80px;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 28px;
+            }
+            .volume-card {
+                background: #fff;
+                border-radius: 8px;
+                padding: 36px 30px 30px;
+                box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+                border: 1px solid rgba(139, 0, 0, 0.06);
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+                cursor: default;
+            }
+            .volume-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 40px rgba(139, 0, 0, 0.08);
+                border-color: rgba(139, 0, 0, 0.15);
+            }
+            .volume-card .card-accent {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #8b0000, #c49a6c);
+                opacity: 0.6;
+            }
+            .volume-card .card-vol {
+                font-size: 12px;
+                color: #8b0000;
+                letter-spacing: 3px;
+                margin-bottom: 8px;
+            }
+            .volume-card .card-title {
+                font-size: 20px;
+                color: #1a1a1a;
+                letter-spacing: 3px;
+                margin-bottom: 6px;
+            }
+            .volume-card .card-sub {
+                font-size: 13px;
+                color: #888;
+                letter-spacing: 2px;
+                margin-bottom: 16px;
+            }
+            .volume-card .card-desc {
+                font-size: 14px;
+                color: #666;
+                line-height: 1.9;
+            }
+            .volume-card .card-tags {
+                margin-top: 16px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .volume-card .card-tag {
+                font-size: 11px;
+                padding: 2px 10px;
+                border-radius: 10px;
+                background: #f5f0ea;
+                color: #8b0000;
+                letter-spacing: 1px;
+            }
+
+            /* ===== 附论专区 ===== */
+            .appendix-section {
+                background: #1a0a0a;
+                padding: 80px 30px;
+                margin-top: 20px;
+            }
+            .appendix-section .section-title {
+                color: #c49a6c;
+            }
+            .appendix-section .section-subtitle {
+                color: rgba(255, 255, 255, 0.3);
+            }
+            .appendix-grid {
+                max-width: 1100px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 20px;
+            }
+            .appendix-card {
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(196, 154, 108, 0.1);
+                border-radius: 6px;
+                padding: 28px 24px;
+                transition: all 0.3s ease;
+            }
+            .appendix-card:hover {
+                background: rgba(255, 255, 255, 0.07);
+                border-color: rgba(196, 154, 108, 0.25);
+            }
+            .appendix-card .apx-num {
+                font-size: 11px;
+                color: rgba(196, 154, 108, 0.4);
+                letter-spacing: 2px;
+                margin-bottom: 6px;
+            }
+            .appendix-card .apx-title {
+                font-size: 17px;
+                color: #c49a6c;
+                letter-spacing: 2px;
+            }
+            .appendix-card .apx-desc {
+                font-size: 13px;
+                color: rgba(255, 255, 255, 0.35);
+                margin-top: 8px;
+                line-height: 1.8;
+            }
+
+            /* ===== 人物专区 ===== */
+            .characters-section {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 80px 30px;
+            }
+            .char-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 24px;
+            }
+            .char-card {
+                text-align: center;
+                padding: 30px 20px 24px;
+                background: #fff;
+                border-radius: 8px;
+                border: 1px solid rgba(139, 0, 0, 0.06);
+                transition: all 0.3s ease;
+            }
+            .char-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 30px rgba(139, 0, 0, 0.06);
+            }
+            .char-card .char-icon {
+                width: 64px;
+                height: 64px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #f5f0ea, #e8dfd5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 14px;
+                font-size: 28px;
+            }
+            .char-card .char-name {
+                font-size: 18px;
+                color: #1a1a1a;
+                letter-spacing: 3px;
+            }
+            .char-card .char-role {
+                font-size: 12px;
+                color: #8b0000;
+                letter-spacing: 2px;
+                margin: 4px 0 8px;
+            }
+            .char-card .char-desc {
+                font-size: 13px;
+                color: #888;
+                line-height: 1.8;
+            }
+
+            /* ===== CTA 区 ===== */
+            .cta-section {
+                background: linear-gradient(160deg, #1a0a0a, #2d0f0f);
+                text-align: center;
+                padding: 80px 30px;
+            }
+            .cta-section .cta-title {
+                font-size: 28px;
+                color: #c49a6c;
+                letter-spacing: 6px;
+                margin-bottom: 16px;
+                font-weight: normal;
+            }
+            .cta-section .cta-desc {
+                font-size: 15px;
+                color: rgba(255, 255, 255, 0.4);
+                letter-spacing: 2px;
+                max-width: 500px;
+                margin: 0 auto 32px;
+                line-height: 2;
+            }
+            .cta-section .cta-btn {
+                display: inline-block;
+                padding: 14px 48px;
+                border: 2px solid rgba(196, 154, 108, 0.4);
+                color: #c49a6c;
+                text-decoration: none;
+                font-size: 16px;
+                letter-spacing: 6px;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+            .cta-section .cta-btn:hover {
+                background: rgba(196, 154, 108, 0.1);
+                border-color: #c49a6c;
+                transform: translateY(-2px);
+            }
+
+            /* ===== Footer ===== */
+            footer {
+                background: #0f0505;
+                padding: 40px 30px;
+                text-align: center;
+                border-top: 1px solid rgba(196, 154, 108, 0.06);
+            }
+            footer p {
+                font-size: 13px;
+                color: rgba(255, 255, 255, 0.2);
+                letter-spacing: 2px;
+            }
+            footer .footer-quote {
+                font-size: 14px;
+                color: rgba(196, 154, 108, 0.3);
+                letter-spacing: 4px;
+                margin-bottom: 12px;
+            }
+
+            /* ===== 响应式 ===== */
+            @media (max-width: 768px) {
+                .navbar {
+                    padding: 0 20px;
+                }
+                .navbar .nav-links {
+                    display: none;
+                }
+                .hero .main-title {
+                    letter-spacing: 10px;
+                }
+                .hero .subtitle {
+                    letter-spacing: 4px;
+                }
+                .volumes-grid {
+                    grid-template-columns: 1fr;
+                    padding: 0 20px 60px;
+                }
+                .appendix-grid {
+                    grid-template-columns: 1fr;
+                }
+                .char-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                .intro-section {
+                    padding: 60px 20px 40px;
+                }
+                .intro-section .intro-quote {
+                    font-size: 16px;
+                }
+            }
+            @media (max-width: 480px) {
+                .hero .main-title {
+                    letter-spacing: 6px;
+                }
+                .char-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* ===== 回到顶部 ===== */
+            .back-top {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                background: rgba(139, 0, 0, 0.85);
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                font-size: 18px;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s;
+                z-index: 999;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            }
+            .back-top.visible {
+                display: flex;
+            }
+            .back-top:hover {
+                background: #8b0000;
+                transform: translateY(-2px);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- ===== 导航栏 ===== -->
+        <nav class="navbar" id="navbar">
+            <a href="#" class="logo">天龙八部</a>
+            <div class="nav-links">
+                <a href="#volumes">五卷纪事</a>
+                <a href="#appendix">附论</a>
+                <a href="#characters">人物</a>
+                <a href="深度解析目录.html">逐回解析</a>
+                <a href="天龙八部简介-排版版.html" target="_blank">全文</a>
+            </div>
+        </nav>
+
+        <!-- ===== Hero ===== -->
+        <header class="hero" id="top">
+            <div class="deco-top"></div>
+            <div class="particles">
+                <div
+                    class="particle"
+                    style="
+                        left: 10%;
+                        animation-duration: 18s;
+                        animation-delay: 0s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 25%;
+                        animation-duration: 22s;
+                        animation-delay: 2s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 40%;
+                        animation-duration: 16s;
+                        animation-delay: 1s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 55%;
+                        animation-duration: 24s;
+                        animation-delay: 3s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 70%;
+                        animation-duration: 20s;
+                        animation-delay: 0.5s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 85%;
+                        animation-duration: 19s;
+                        animation-delay: 2.5s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 15%;
+                        animation-duration: 21s;
+                        animation-delay: 4s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 60%;
+                        animation-duration: 17s;
+                        animation-delay: 1.5s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 35%;
+                        animation-duration: 23s;
+                        animation-delay: 3.5s;
+                    "
+                ></div>
+                <div
+                    class="particle"
+                    style="
+                        left: 50%;
+                        animation-duration: 15s;
+                        animation-delay: 0.8s;
+                    "
+                ></div>
+            </div>
+            <div class="main-title">
+                天龙八部
+                <span class="sub-accent">DEMI-GODS AND SEMI-DEVILS</span>
+            </div>
+            <div class="divider-line"></div>
+            <div class="subtitle">无人不冤 · 有情皆孽</div>
+            <div class="author-line">金庸 · 一九六三年</div>
+            <div class="hero-verse">
+                一切有为法，如梦幻泡影<br />如露亦如电，应作如是观
+            </div>
+            <div class="scroll-indicator">↓ 向下探索</div>
+        </header>
+
+        <!-- ===== 引言 ===== -->
+        <section class="intro-section">
+            <div class="intro-quote">
+                金庸先生尝言：&ldquo;《天龙八部》这部书，主要写的是人间的苦难。&rdquo;自1963年在《明报》连载以来，这部鸿篇巨制便以其恢弘的气魄、复杂的人性与深邃的佛学哲思，震动了整个华语文学界。全书五卷、五十回、百余万言，以北宋末年宋辽对峙为经纬，以大理、西夏、吐蕃诸国为缀饰，编织了一张囊括天下英雄的命运之网。
+                <cite>—— 开篇题记</cite>
+            </div>
+        </section>
+
+        <!-- ===== 五卷纪事 ===== -->
+        <section id="volumes">
+            <h2 class="section-title">五 卷 纪 事</h2>
+            <p class="section-subtitle">—— 全书脉络，一目了然 ——</p>
+            <div class="volumes-grid">
+                <div class="volume-card">
+                    <div class="card-accent"></div>
+                    <div class="card-vol">卷一</div>
+                    <div class="card-title">少年游</div>
+                    <div class="card-sub">大理王子初涉江湖</div>
+                    <div class="card-desc">
+                        无量山下风波陡起，段誉误入深谷巧遇"神仙姐姐"，习得北冥神功与凌波微步。后被鸠摩智掳至江南，初遇王语嫣，痴心从此不可自拔。
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">段誉</span>
+                        <span class="card-tag">无量山</span>
+                        <span class="card-tag">六脉神剑</span>
+                        <span class="card-tag">王语嫣</span>
+                    </div>
+                </div>
+
+                <div class="volume-card">
+                    <div class="card-accent"></div>
+                    <div class="card-vol">卷二</div>
+                    <div class="card-title">苏幕遮</div>
+                    <div class="card-sub">杏子林英雄变</div>
+                    <div class="card-desc">
+                        松鹤楼头段誉与乔峰结拜。杏子林中乔峰身世暴露——从丐帮帮主沦为契丹余孽。聚贤庄血战以一敌百，阿朱重伤。小镜湖畔，塞上牛羊空许约。
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">乔峰</span>
+                        <span class="card-tag">阿朱</span>
+                        <span class="card-tag">聚贤庄</span>
+                        <span class="card-tag">雁门关</span>
+                    </div>
+                </div>
+
+                <div class="volume-card">
+                    <div class="card-accent"></div>
+                    <div class="card-vol">卷三</div>
+                    <div class="card-title">相见欢</div>
+                    <div class="card-sub">塞外孤影与辽国风云</div>
+                    <div class="card-desc">
+                        阿紫与游坦之的痴缠孽缘。萧峰北上辽国封南院大王。少室山三兄弟并肩大战天下英雄。扫地僧以无上佛法化解三十年血海深仇。
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">萧峰</span>
+                        <span class="card-tag">虚竹</span>
+                        <span class="card-tag">扫地僧</span>
+                        <span class="card-tag">少室山</span>
+                    </div>
+                </div>
+
+                <div class="volume-card">
+                    <div class="card-accent"></div>
+                    <div class="card-vol">卷四</div>
+                    <div class="card-title">何满子</div>
+                    <div class="card-sub">天山缥缈与西夏招亲</div>
+                    <div class="card-desc">
+                        虚竹继任灵鹫宫主，以慈悲统御三十六洞七十二岛。西夏公主三问招亲，虚竹与"梦姑"终成眷属。段誉身世揭晓，枯井之中王语嫣终定情。
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">虚竹</span>
+                        <span class="card-tag">西夏招亲</span>
+                        <span class="card-tag">灵鹫宫</span>
+                        <span class="card-tag">枯井</span>
+                    </div>
+                </div>
+
+                <div class="volume-card">
+                    <div class="card-accent"></div>
+                    <div class="card-vol">卷五</div>
+                    <div class="card-title">水龙吟</div>
+                    <div class="card-sub">雁门关英雄泪</div>
+                    <div class="card-desc">
+                        耶律洪基南征，萧峰被囚。雁门关外，萧峰以一人之力迫退十万辽军，折箭为誓。英雄捐躯，阿紫跳崖相随。三兄弟洒泪而别。
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">萧峰</span>
+                        <span class="card-tag">雁门关</span>
+                        <span class="card-tag">耶律洪基</span>
+                        <span class="card-tag">以身殉义</span>
+                    </div>
+                </div>
+
+                <div class="volume-card">
+                    <div class="card-accent"></div>
+                    <div class="card-vol">结语</div>
+                    <div class="card-title">无人不冤，有情皆孽</div>
+                    <div class="card-sub">众生皆苦，慈悲为舟</div>
+                    <div class="card-desc">
+                        金庸以八字的佛家悲悯总结全书——每个人都在命运的罗网中挣扎，却都在用自己的方式对抗宿命。萧峰以死殉义，段誉以善治国，虚竹以诚待人，扫地僧以度化众生为念。
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">佛学</span>
+                        <span class="card-tag">悲悯</span>
+                        <span class="card-tag">命运</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 附论 ===== -->
+        <section class="appendix-section" id="appendix">
+            <h2 class="section-title">附 论 专 题</h2>
+            <p class="section-subtitle">—— 深度解读，延伸思考 ——</p>
+            <div class="appendix-grid">
+                <div class="appendix-card">
+                    <div class="apx-num">附论一</div>
+                    <div class="apx-title">天龙八部与人物对应</div>
+                    <div class="apx-desc">
+                        天众·段誉 · 龙众·乔峰 · 夜叉·游坦之 · 乾闼婆·虚竹 ·
+                        阿修罗·慕容复 · 迦楼罗·鸠摩智 · 紧那罗·段正淳 ·
+                        摩睺罗伽·游坦之
+                    </div>
+                </div>
+                <div class="appendix-card">
+                    <div class="apx-num">附论二</div>
+                    <div class="apx-title">金句赏析</div>
+                    <div class="apx-desc">
+                        精选原著七大经典段落——乔峰的英雄气、段誉的痴情、虚竹的憨厚、阿朱的善良、扫地僧的佛法、萧峰之死、结尾的意境。
+                    </div>
+                </div>
+                <div class="appendix-card">
+                    <div class="apx-num">附论三</div>
+                    <div class="apx-title">佛学命题</div>
+                    <div class="apx-desc">
+                        贪·嗔·痴·慢·疑——五毒与五主角的对应。因果与业力、慈悲与智慧在书中的展现。金庸的佛学观。
+                    </div>
+                </div>
+                <div class="appendix-card">
+                    <div class="apx-num">附论四</div>
+                    <div class="apx-title">配角命运图谱</div>
+                    <div class="apx-desc">
+                        鸠摩智从武痴到高僧、康敏——嫉妒的化身、包不同与风波恶——忠与义、叶二娘——母与悲。
+                    </div>
+                </div>
+                <div class="appendix-card">
+                    <div class="apx-num">附论五</div>
+                    <div class="apx-title">叙事艺术</div>
+                    <div class="apx-desc">
+                        三线并进的宏大叙事、伏笔与照应、武功与人格的统一——金庸的结构之美。
+                    </div>
+                </div>
+                <div class="appendix-card">
+                    <div class="apx-num">附论六</div>
+                    <div class="apx-title">文学史地位</div>
+                    <div class="apx-desc">
+                        超越武侠的文学价值、人物形象的经典化、思想深度——为何《天龙八部》是中国文学史上的里程碑。
+                    </div>
+                </div>
+                <div class="appendix-card">
+                    <div class="apx-num">附论七</div>
+                    <div class="apx-title">人物关系简表</div>
+                    <div class="apx-desc">
+                        萧峰·段誉·虚竹三兄弟关系网、大理段氏家族图谱、慕容世家世系、逍遥派传承。
+                    </div>
+                </div>
+                <div class="appendix-card">
+                    <div class="apx-num">附论八</div>
+                    <div class="apx-title">创作历程与版本</div>
+                    <div class="apx-desc">
+                        1963年《明报》连载、1978年修订版、2005年新修版——三个版本的比较与演变。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 人物 ===== -->
+        <section class="characters-section" id="characters">
+            <h2 class="section-title">主 要 人 物</h2>
+            <p class="section-subtitle">—— 命运交错的众生相 ——</p>
+            <div class="char-grid">
+                <div class="char-card">
+                    <div class="char-icon">🐉</div>
+                    <div class="char-name">萧峰</div>
+                    <div class="char-role">契丹悲歌 · 英雄绝唱</div>
+                    <div class="char-desc">
+                        原丐帮帮主，身世之谜揭开后改回契丹名萧峰。一生在胡汉之间挣扎，最终以死换得辽宋和平。
+                    </div>
+                </div>
+                <div class="char-card">
+                    <div class="char-icon">🌿</div>
+                    <div class="char-name">段誉</div>
+                    <div class="char-role">大理王子 · 痴情一生</div>
+                    <div class="char-desc">
+                        厌恶武功却身怀绝技，痴恋王语嫣却历尽波折。身世之谜揭晓后继承皇位，以仁治国。
+                    </div>
+                </div>
+                <div class="char-card">
+                    <div class="char-icon">🙏</div>
+                    <div class="char-name">虚竹</div>
+                    <div class="char-role">少林小僧 · 灵鹫宫主</div>
+                    <div class="char-desc">
+                        只想当一辈子小和尚，却被命运推向灵鹫宫主之位。得三老内力，娶西夏公主，一生循善而行。
+                    </div>
+                </div>
+                <div class="char-card">
+                    <div class="char-icon">🕊️</div>
+                    <div class="char-name">阿朱</div>
+                    <div class="char-role">善良之光 · 塞外之约</div>
+                    <div class="char-desc">
+                        慕容家婢女，精通易容术。在乔峰最黑暗时给了他唯一的光，却死于最爱之人的掌下。
+                    </div>
+                </div>
+                <div class="char-card">
+                    <div class="char-icon">👑</div>
+                    <div class="char-name">慕容复</div>
+                    <div class="char-role">阿修罗道 · 执念成魔</div>
+                    <div class="char-desc">
+                        大燕皇族后裔，一生为"复兴大燕"而活。不择手段，最终众叛亲离，疯癫收场。
+                    </div>
+                </div>
+                <div class="char-card">
+                    <div class="char-icon">🔥</div>
+                    <div class="char-name">鸠摩智</div>
+                    <div class="char-role">迦楼罗 · 贪毒反噬</div>
+                    <div class="char-desc">
+                        吐蕃国师，贪婪收集天下武学。走火入魔后武功尽失，反而大彻大悟，成为一代高僧。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CTA ===== -->
+        <section class="cta-section">
+            <h2 class="cta-title">深 入 阅 读</h2>
+            <p class="cta-desc">
+                打开排版精美的全本纪事，<br />
+                从无量山到雁门关，完整领略这部不朽经典的魅力。
+            </p>
+            <a href="天龙八部简介-排版版.html" target="_blank" class="cta-btn"
+                >阅读全文 →</a
+            >
+        </section>
+
+        <!-- ===== Footer ===== -->
+        <footer>
+            <p class="footer-quote">无人不冤 · 有情皆孽</p>
+            <p>金庸 · 《天龙八部》 · 1963–2025</p>
+            <p
+                style="
+                    margin-top: 8px;
+                    font-size: 12px;
+                    color: rgba(255, 255, 255, 0.12);
+                "
+            >
+                为纪念金庸先生诞辰一百周年而作
+            </p>
+        </footer>
+
+        <!-- ===== 回到顶部 ===== -->
+        <button class="back-top" id="backTop" title="回到顶部">↑</button>
+
+        <script>
+            // 导航栏滚动效果
+            const navbar = document.getElementById("navbar");
+            const backTop = document.getElementById("backTop");
+            window.addEventListener("scroll", () => {
+                const scrollY = window.scrollY;
+                navbar.classList.toggle("scrolled", scrollY > 60);
+                backTop.classList.toggle("visible", scrollY > 500);
+            });
+            backTop.addEventListener("click", () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        </script>
+    </body>
+</html>
